@@ -39,16 +39,26 @@ public class MemoryButton extends AppCompatButton  {
 
 //        front = context.getDrawable(frontImageDrawableId);
         back = context.getDrawable(R.drawable.code);
-        Bitmap bitmap = null;
-        try {
-            bitmap = Glide.with(context).asBitmap().load(imagesMap.get(frontImageDrawableId)).submit().get();
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
 
-        }catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        front = new BitmapDrawable(this.getResources(),bitmap);
+                Bitmap bitmap = null;
+                try {
+                    bitmap = Glide.with(context).asBitmap().load(imagesMap.get(frontImageDrawableId)).submit().get();
+                    //front = new BitmapDrawable(this.getResources(), bitmap);
+                    front = new BitmapDrawable(bitmap);
+
+                } catch (
+                        ExecutionException e) {
+                    e.printStackTrace();
+                } catch (
+                        InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
 
         setBackground(back);
 

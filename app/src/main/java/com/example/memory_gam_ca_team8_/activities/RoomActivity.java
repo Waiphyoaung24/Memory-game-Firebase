@@ -95,8 +95,8 @@ public class RoomActivity extends AppCompatActivity {
                 roomRef = database.getReference("rooms/" + roomName + "/player2");
                 roomRef.setValue(playerName);
 
-               retrievePhotos(roomName);
-                sendGameActivity(prepareImages);
+                retrievePhotos(roomName);
+
 
 
 
@@ -152,15 +152,16 @@ public class RoomActivity extends AppCompatActivity {
 
     public void retrievePhotos(String data) {
         prepareImages = new ArrayList<>();
-        DatabaseReference myRef = database.getReference("rooms/" + data).child("photos");
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference myRef = database.getReference("rooms/" + data+"/photos");
+        myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 prepareImages.clear();
                 for(int i = 0 ; i<6;i++){
                     prepareImages.add(snapshot.child(String.valueOf(i)).getValue(String.class));
 
-               }
+                }
+                sendGameActivity(prepareImages);
             }
 
             @Override

@@ -8,9 +8,9 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_play"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Play a Game"
+        android:text="Play as Solo"
         android:textAllCaps="false"
         app:layout_constraintBottom_toTopOf="@id/btn_host"
 
@@ -24,7 +24,7 @@
         android:id="@+id/btn_host"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Host a Game"
+        android:text="Create/Join a Game"
         android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -33,17 +33,7 @@
 
     </com.google.android.material.button.MaterialButton>
 
-    <com.google.android.material.button.MaterialButton
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:text="Join a Game"
-        android:id="@+id/btn_join"
-        android:textAllCaps="false"
-        app:layout_constraintEnd_toEndOf="@+id/btn_host"
-        app:layout_constraintStart_toStartOf="@+id/btn_host"
-        app:layout_constraintTop_toBottomOf="@id/btn_host">
 
-    </com.google.android.material.button.MaterialButton>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_signout"
@@ -51,9 +41,9 @@
         android:layout_height="wrap_content"
         android:text="Sign out"
         android:textAllCaps="false"
-        app:layout_constraintEnd_toEndOf="@+id/btn_join"
-        app:layout_constraintStart_toStartOf="@+id/btn_join"
-        app:layout_constraintTop_toBottomOf="@id/btn_join">
+        app:layout_constraintEnd_toEndOf="@+id/btn_host"
+        app:layout_constraintStart_toStartOf="@+id/btn_host"
+        app:layout_constraintTop_toBottomOf="@id/btn_host">
 
     </com.google.android.material.button.MaterialButton>
 

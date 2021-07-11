@@ -18,7 +18,6 @@ public class Main_menuActivity extends AppCompatActivity {
 
     MaterialButton btnPlay;
     MaterialButton btnHost;
-    MaterialButton btnJoin;
     MaterialButton btnSignOut;
     FirebaseDatabase database;
     private static final String websiteUrl = "https://memory-team8-ca-default-rtdb.asia-southeast1.firebasedatabase.app/";
@@ -70,7 +69,6 @@ public class Main_menuActivity extends AppCompatActivity {
     public void initComponents(){
         btnPlay = findViewById(R.id.btn_play);
         btnHost = findViewById(R.id.btn_host);
-        btnJoin = findViewById(R.id.btn_join);
         btnSignOut = findViewById(R.id.btn_signout);
         database = FirebaseDatabase.getInstance(websiteUrl);
 
