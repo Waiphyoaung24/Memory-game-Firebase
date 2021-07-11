@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.Main_menuActivity">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Play a Game"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toTopOf="@id/btn_host"
+
+        app:layout_constraintEnd_toEndOf="@id/btn_host"
+        app:layout_constraintHeight_percent="0.4"
+        app:layout_constraintStart_toStartOf="@id/btn_host">
+
+    </com.google.android.material.button.MaterialButton>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_host"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Host a Game"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </com.google.android.material.button.MaterialButton>
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="Join a Game"
+        android:id="@+id/btn_join"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="@+id/btn_host"
+        app:layout_constraintStart_toStartOf="@+id/btn_host"
+        app:layout_constraintTop_toBottomOf="@id/btn_host">
+
+    </com.google.android.material.button.MaterialButton>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_signout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Sign out"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="@+id/btn_join"
+        app:layout_constraintStart_toStartOf="@+id/btn_join"
+        app:layout_constraintTop_toBottomOf="@id/btn_join">
+
+    </com.google.android.material.button.MaterialButton>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

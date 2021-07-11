@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "718605703357",
+    "project_id": "memory-team8-ca",
+    "storage_bucket": "memory-team8-ca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:718605703357:android:d0411faa4b4b0a825d7fd4",
+        "android_client_info": {
+          "package_name": "com.example.memory_gam_ca_team8_"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "718605703357-dseip3j11jocehv6igog93aqd1tvqjbe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.memory_gam_ca_team8_",
+            "certificate_hash": "aecc6c93f1138f0a193018de754f4b080071b2f5"
+          }
+        },
+        {
+          "client_id": "718605703357-q70irhpaih2thpoqmg8d9pam7km3opv8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQ2-HWlih2T5n2hHDaQ0nn6VR5zdPwSOM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "718605703357-q70irhpaih2thpoqmg8d9pam7km3opv8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
