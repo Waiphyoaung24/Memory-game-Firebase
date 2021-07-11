@@ -1,23 +1,39 @@
 package com.example.memory_gam_ca_team8_.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
-
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.GridLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
-
-import com.example.memory_gam_ca_team8_.R;
-import com.example.memory_gam_ca_team8_.domains.MemoryButton;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
+import com.example.memory_gam_ca_team8_.R;
+import com.example.memory_gam_ca_team8_.components.LoadingDialog;
+import com.example.memory_gam_ca_team8_.domains.MemoryButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -28,12 +44,25 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private MemoryButton selectedButton;
     private MemoryButton selectedButton2;
+    FirebaseDatabase database;
+    private static final String websiteUrl = "https://memory-team8-ca-default-rtdb.asia-southeast1.firebasedatabase.app/";
 
     private boolean isBusy = false;
+    private boolean flag;
 
     ArrayList<String> images = new ArrayList<>();
 
     Map<Integer,String> imagesMap = new HashMap<>();
+
+    private TextView timerTV;
+    private CountDownTimer timer;
+    MediaPlayer mediaPlayer;
+    private TextView scoreTV;
+    int score = 0;
+    String playerType = "";
+    String roomName = "";
+    int gameType ;
+
 
 
 
@@ -41,6 +70,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        database = FirebaseDatabase.getInstance(websiteUrl);
+
 
         GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout_4x3);
 
@@ -75,16 +107,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         Intent intent = getIntent();
         images = intent.getStringArrayListExtra("image");
-        loadImages(images,numColumns,numRows,gridLayout);
+         playerType = intent.getStringExtra("role");
+         roomName = intent.getStringExtra("roomName");
 
-
-    }
-    protected void loadImages(ArrayList<String>images,int numColumns,int numRows,GridLayout gridLayout){
         for(int i = 0; i < images.size();i++)
         {
             imagesMap.put(i,images.get(i));
         }
-
 
         for(int r =0; r< numRows; r++)
         {
@@ -97,8 +126,40 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 gridLayout.addView(tempButton);
             }
         }
+        timerTV= (TextView) findViewById(R.id.timerTextView);
+        CountUpTimer timer = new CountUpTimer(90000) {
+            public void onTick(int l) {
+                timerTV.setText(String.valueOf(l) + "s");
+            }
+        };
+        timer.start();
 
+        mediaPlayer = MediaPlayer.create(getApplicationContext(),R.raw.gametheme);
+        mediaPlayer.start();
 
+    }
+
+    public abstract class CountUpTimer extends CountDownTimer {
+        private static final long INTERVAL_MS = 1000;
+        private final long duration;
+
+        protected CountUpTimer(long durationMs) {
+            super(durationMs, INTERVAL_MS);
+            this.duration = durationMs;
+        }
+
+        public abstract void onTick(int second);
+
+        @Override
+        public void onTick(long msUntilFinished) {
+            int second = (int) ((duration - msUntilFinished) / 1000);
+            onTick(second);
+        }
+
+        @Override
+        public void onFinish() {
+            onTick(duration / 1000);
+        }
     }
 
     protected void shuffleButtonGraphics(){
@@ -146,8 +207,21 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             selectedButton.setMatched(true);
             selectedButton.setEnabled(false);
             button.setEnabled(false);
+            score+=1;
+            scoreTV = (TextView) findViewById(R.id.score);
+            scoreTV.setText(String.valueOf("Score " +score));
+            if(checkForRoomOrSingleGame() == 0){
+            endGame();}
+            else {
+               flag = chooseWinner();
+                if(flag){
+                    alertWinner();
+                }
+
+            }
             //reset the select button tracker
             selectedButton = null;
+
             return;
 
         } else{
@@ -171,4 +245,79 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
 
     }
+
+    public void endGame(){
+        if(score == 6){
+
+
+            mediaPlayer.stop();
+            mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.wintheme);
+            mediaPlayer.start();
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(GameActivity.this);
+            alertDialogBuilder
+                    .setMessage("Game is over!" )
+                    .setCancelable(false)
+                    .setPositiveButton("NEW GAME", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Intent intent = new Intent(GameActivity.this, MainActivity.class);
+                            startActivity(intent);
+
+                        }
+                    })
+                    .setNegativeButton("STOP THE GAME", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                            finish();
+
+                        }
+                    });
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        }
+    }
+
+    private boolean chooseWinner(){
+
+        if(score == 6){
+            DatabaseReference myRef = database.getReference("rooms/"+roomName+"/"+playerType+"/Winner");
+            myRef.setValue("True");
+            return true;
+        }
+        return false;
+
+    }
+    public int checkForRoomOrSingleGame() {
+        SharedPreferences preferences = getSharedPreferences("room", Context.MODE_PRIVATE);
+        int flag = preferences.getInt("multiplayer", 0);
+        return flag;
+
+    }
+    public void alertWinner() {
+        DatabaseReference myRef = database.getReference("rooms/" +roomName+ "/"+ playerType+"/Winner");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull  DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    LoadingDialog dialog = new LoadingDialog(GameActivity.this);
+                    dialog.startLoadingWinnerDialog();
+                    dialog.onClickPlay();
+
+
+                } else {
+
+                    LoadingDialog dialog = new LoadingDialog(GameActivity.this);
+                    dialog.startLoadingLostDialog();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
 }

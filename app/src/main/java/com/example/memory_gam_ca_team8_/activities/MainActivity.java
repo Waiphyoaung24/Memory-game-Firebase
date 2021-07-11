@@ -251,6 +251,8 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("player arrived","player arrived");
                     Intent intent = new Intent(getApplicationContext(),GameActivity.class);
                     intent.putStringArrayListExtra("image", prepareImages);
+                    intent.putExtra("role","Player1");
+                    intent.putExtra("roomName",playerName+"'s Room");
                     startActivity(intent);
 
                 } else {

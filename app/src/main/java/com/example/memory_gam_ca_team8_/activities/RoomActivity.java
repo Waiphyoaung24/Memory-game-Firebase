@@ -176,6 +176,8 @@ public class RoomActivity extends AppCompatActivity {
     public void sendGameActivity(ArrayList<String>list){
         Intent intent = new Intent(getApplicationContext(), GameActivity.class);
         intent.putStringArrayListExtra("image", list);
+        intent.putExtra("role","Player2");
+        intent.putExtra("roomName",roomName);
         startActivity(intent);
     }
 
