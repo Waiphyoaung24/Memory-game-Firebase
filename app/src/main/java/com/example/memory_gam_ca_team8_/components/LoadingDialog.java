@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.example.memory_gam_ca_team8_.R;
 import com.example.memory_gam_ca_team8_.activities.RoomActivity;
+import com.example.memory_gam_ca_team8_.delegates.IDelegateDialog;
 import com.google.android.material.button.MaterialButton;
 
 public class LoadingDialog {
@@ -19,9 +20,12 @@ public class LoadingDialog {
     MaterialButton btnPlay;
     TextView tvText;
 
+
+
+
     public LoadingDialog(Activity myActivity){
         activity = myActivity;
-       
+
 
     }
     public void startloadingAlertDialog(){
@@ -49,12 +53,14 @@ public class LoadingDialog {
         dialog = builder.create();
         dialog.show();
     }
-    public void onClickPlay(View view){
+    public void onClickPlay(){
      btnPlay =   dialog.findViewById(R.id.btnPlay);
      btnPlay.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-             Toast.makeText(activity, "You go back to activity haha", Toast.LENGTH_SHORT).show();
+          Intent intent = new Intent(activity,RoomActivity.class);
+          activity.startActivity(intent);
+
          }
      });
     }

@@ -28,6 +28,7 @@ import java.util.Random;
 
 import com.example.memory_gam_ca_team8_.R;
 import com.example.memory_gam_ca_team8_.components.LoadingDialog;
+import com.example.memory_gam_ca_team8_.delegates.IDelegateDialog;
 import com.example.memory_gam_ca_team8_.domains.MemoryButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,7 +36,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class GameActivity extends AppCompatActivity implements View.OnClickListener{
+public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
     private int numberOfElements;
     private MemoryButton[] buttons;
@@ -62,7 +63,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     String playerType = "";
     String roomName = "";
     int gameType ;
-
+    private IDelegateDialog mDelegate;
 
 
 
@@ -138,6 +139,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mediaPlayer.start();
 
     }
+
+
 
     public abstract class CountUpTimer extends CountDownTimer {
         private static final long INTERVAL_MS = 1000;
@@ -216,6 +219,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                flag = chooseWinner();
                 if(flag){
                     alertWinner();
+                } else {
+                alertWinner();
                 }
 
             }
@@ -281,9 +286,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private boolean chooseWinner(){
 
-        if(score == 6){
-            DatabaseReference myRef = database.getReference("rooms/"+roomName+"/"+playerType+"/Winner");
+        if(score >= 6){
+            DatabaseReference myRef = database.getReference("rooms/"+roomName+"/"+"/Winner");
             myRef.setValue("True");
+            LoadingDialog dialog = new LoadingDialog(GameActivity.this);
+            dialog.startLoadingWinnerDialog();
+            dialog.onClickPlay();
+
             return true;
         }
         return false;
@@ -296,20 +305,20 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     }
     public void alertWinner() {
-        DatabaseReference myRef = database.getReference("rooms/" +roomName+ "/"+ playerType+"/Winner");
+        DatabaseReference myRef = database.getReference("rooms/" +roomName+"/Winner");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull  DataSnapshot snapshot) {
-                if(snapshot.exists()){
+                if(snapshot.exists() && score <6){
+
                     LoadingDialog dialog = new LoadingDialog(GameActivity.this);
-                    dialog.startLoadingWinnerDialog();
+                    dialog.startLoadingLostDialog();
                     dialog.onClickPlay();
+
 
 
                 } else {
 
-                    LoadingDialog dialog = new LoadingDialog(GameActivity.this);
-                    dialog.startLoadingLostDialog();
                 }
             }
 
