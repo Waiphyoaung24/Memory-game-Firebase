@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String websiteUrl = "https://memory-team8-ca-default-rtdb.asia-southeast1.firebasedatabase.app/";
     LoadingDialog dialog = new LoadingDialog(MainActivity.this);
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -13,7 +13,6 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
-import android.widget.Chronometer;
 import android.widget.GridLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,12 +58,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     Map<Integer, String> imagesMap = new HashMap<>();
 
-
     TextView tvTimer;
     long startTime, timeInMilliseconds = 0;
     Handler customHandler = new Handler();
-
-
     MediaPlayer mediaPlayer;
     private TextView scoreTV;
     int score = 0;
@@ -125,66 +121,29 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 gridLayout.addView(tempButton);
             }
         }
-<<<<<<< HEAD
-        timerTV = (TextView) findViewById(R.id.timerTextView);
-        CountUpTimer timer = new CountUpTimer(90000) {
-            public void onTick(int l) {
-                timerTV.setText(String.valueOf(l) + "s");
-            }
-        };
-        timer.start();
-
-        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.gametheme);
-=======
 
         //Timer Start
         tvTimer= (TextView) findViewById(R.id.timerTextView);
         startTime = SystemClock.uptimeMillis();
         customHandler.postDelayed(updateTimerThread, 0);
 
-        //Game Background Music Start
-        mediaPlayer = MediaPlayer.create(getApplicationContext(),R.raw.gametheme);
->>>>>>> main
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.gametheme);
         mediaPlayer.start();
 
     }
 
-    //Timer format
+
     public static String getDateFromMillis(long d) {
         SimpleDateFormat df = new SimpleDateFormat("mm:ss:SS");
         df.setTimeZone(TimeZone.getTimeZone("GMT"));
         return df.format(d);
     }
-
-<<<<<<< HEAD
-    public abstract class CountUpTimer extends CountDownTimer {
-        private static final long INTERVAL_MS = 1000;
-        private final long duration;
-
-        protected CountUpTimer(long durationMs) {
-            super(durationMs, INTERVAL_MS);
-            this.duration = durationMs;
-        }
-
-        public abstract void onTick(int second);
-
-        @Override
-        public void onTick(long msUntilFinished) {
-            int second = (int) ((duration - msUntilFinished) / 1000);
-            onTick(second);
-        }
-
-        @Override
-        public void onFinish() {
-            onTick(duration / 1000);
-=======
     //Timer run (new thread)
     private Runnable updateTimerThread = new Runnable() {
         public void run() {
             timeInMilliseconds = SystemClock.uptimeMillis() - startTime;
             tvTimer.setText(getDateFromMillis(timeInMilliseconds));
             customHandler.postDelayed(this, 0);
->>>>>>> main
         }
     };
 
@@ -234,8 +193,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             button.setEnabled(false);
             score += 1;
             scoreTV = (TextView) findViewById(R.id.score);
-<<<<<<< HEAD
-            scoreTV.setText(String.valueOf("Score " + score));
+            scoreTV.setText(String.valueOf(score + " of 6 matches"));
             if (checkForRoomOrSingleGame() == 0) {
                 endGame();
             } else {
@@ -244,14 +202,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
                 if(flag) {
 
-=======
-            scoreTV.setText(String.valueOf(score + " of 6 matches"));
-            if(checkForRoomOrSingleGame() == 0){
-            endGame();}
-            else {
-               flag = chooseWinner();
-                if(flag){
->>>>>>> main
                     alertWinner();
                 } else {
 
@@ -286,20 +236,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-<<<<<<< HEAD
     public void endGame() {
         if (score == 6) {
-=======
-    public void endGame(){
-        if(score == 6){
+
             //Timer Stop
             customHandler.removeCallbacks(updateTimerThread);
->>>>>>> main
 
             //Game Background Music Stop
             mediaPlayer.stop();
 
-            //Win Music Start
             mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.wintheme);
             mediaPlayer.start();
 
