@@ -10,8 +10,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
+import android.widget.Chronometer;
 import android.widget.GridLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,10 +23,12 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.TimeZone;
 
 import com.example.memory_gam_ca_team8_.R;
 import com.example.memory_gam_ca_team8_.components.LoadingDialog;
@@ -55,8 +59,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     Map<Integer,String> imagesMap = new HashMap<>();
 
-    private TextView timerTV;
-    private CountDownTimer timer;
+
+    TextView tvTimer;
+    long startTime, timeInMilliseconds = 0;
+    Handler customHandler = new Handler();
+
+
     MediaPlayer mediaPlayer;
     private TextView scoreTV;
     int score = 0;
@@ -127,43 +135,33 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 gridLayout.addView(tempButton);
             }
         }
-        timerTV= (TextView) findViewById(R.id.timerTextView);
-        CountUpTimer timer = new CountUpTimer(90000) {
-            public void onTick(int l) {
-                timerTV.setText(String.valueOf(l) + "s");
-            }
-        };
-        timer.start();
 
+        //Timer Start
+        tvTimer= (TextView) findViewById(R.id.timerTextView);
+        startTime = SystemClock.uptimeMillis();
+        customHandler.postDelayed(updateTimerThread, 0);
+
+        //Game Background Music Start
         mediaPlayer = MediaPlayer.create(getApplicationContext(),R.raw.gametheme);
         mediaPlayer.start();
 
     }
 
-
-
-    public abstract class CountUpTimer extends CountDownTimer {
-        private static final long INTERVAL_MS = 1000;
-        private final long duration;
-
-        protected CountUpTimer(long durationMs) {
-            super(durationMs, INTERVAL_MS);
-            this.duration = durationMs;
-        }
-
-        public abstract void onTick(int second);
-
-        @Override
-        public void onTick(long msUntilFinished) {
-            int second = (int) ((duration - msUntilFinished) / 1000);
-            onTick(second);
-        }
-
-        @Override
-        public void onFinish() {
-            onTick(duration / 1000);
-        }
+    //Timer format
+    public static String getDateFromMillis(long d) {
+        SimpleDateFormat df = new SimpleDateFormat("mm:ss:SS");
+        df.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return df.format(d);
     }
+
+    //Timer run (new thread)
+    private Runnable updateTimerThread = new Runnable() {
+        public void run() {
+            timeInMilliseconds = SystemClock.uptimeMillis() - startTime;
+            tvTimer.setText(getDateFromMillis(timeInMilliseconds));
+            customHandler.postDelayed(this, 0);
+        }
+    };
 
     protected void shuffleButtonGraphics(){
 
@@ -253,9 +251,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     public void endGame(){
         if(score == 6){
+            //Timer Stop
+            customHandler.removeCallbacks(updateTimerThread);
 
-
+            //Game Background Music Stop
             mediaPlayer.stop();
+
+            //Win Music Start
             mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.wintheme);
             mediaPlayer.start();
 
