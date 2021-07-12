@@ -210,7 +210,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             button.setEnabled(false);
             score+=1;
             scoreTV = (TextView) findViewById(R.id.score);
-            scoreTV.setText(String.valueOf("Score " +score));
+            scoreTV.setText(String.valueOf(score + " of 6 matches"));
             if(checkForRoomOrSingleGame() == 0){
             endGame();}
             else {
