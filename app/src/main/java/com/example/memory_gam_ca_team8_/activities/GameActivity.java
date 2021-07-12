@@ -53,7 +53,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     ArrayList<String> images = new ArrayList<>();
 
-    Map<Integer,String> imagesMap = new HashMap<>();
+    Map<Integer, String> imagesMap = new HashMap<>();
 
     private TextView timerTV;
     private CountDownTimer timer;
@@ -62,9 +62,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     int score = 0;
     String playerType = "";
     String roomName = "";
-    int gameType ;
+    int gameType;
     private IDelegateDialog mDelegate;
-
 
 
     @Override
@@ -86,14 +85,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         buttons = new MemoryButton[numberOfElements];
 
         //storing the 6 images
-        buttonGraphics = new int[numberOfElements/2];
+        buttonGraphics = new int[numberOfElements / 2];
 
-//        buttonGraphics[0] = R.drawable.camel;
-//        buttonGraphics[1] = R.drawable.coala;
-//        buttonGraphics[2] = R.drawable.fox;
-//        buttonGraphics[3] = R.drawable.lion;
-//        buttonGraphics[4] = R.drawable.monkey;
-//        buttonGraphics[5] = R.drawable.wolf;
 
         buttonGraphics[0] = 0;
         buttonGraphics[1] = 1;
@@ -108,26 +101,23 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         Intent intent = getIntent();
         images = intent.getStringArrayListExtra("image");
-         playerType = intent.getStringExtra("role");
-         roomName = intent.getStringExtra("roomName");
+        playerType = intent.getStringExtra("role");
+        roomName = intent.getStringExtra("roomName");
 
-        for(int i = 0; i < images.size();i++)
-        {
-            imagesMap.put(i,images.get(i));
+        for (int i = 0; i < images.size(); i++) {
+            imagesMap.put(i, images.get(i));
         }
 
-        for(int r =0; r< numRows; r++)
-        {
-            for(int c =0; c< numColumns; c++)
-            {
-                MemoryButton tempButton = new MemoryButton(this, r,c,buttonGraphics[buttonGraphiclocations[r * numColumns + c]],imagesMap);
+        for (int r = 0; r < numRows; r++) {
+            for (int c = 0; c < numColumns; c++) {
+                MemoryButton tempButton = new MemoryButton(this, r, c, buttonGraphics[buttonGraphiclocations[r * numColumns + c]], imagesMap);
                 tempButton.setId(View.generateViewId());
                 tempButton.setOnClickListener(this);
-                buttons[r * numColumns +c] = tempButton;
+                buttons[r * numColumns + c] = tempButton;
                 gridLayout.addView(tempButton);
             }
         }
-        timerTV= (TextView) findViewById(R.id.timerTextView);
+        timerTV = (TextView) findViewById(R.id.timerTextView);
         CountUpTimer timer = new CountUpTimer(90000) {
             public void onTick(int l) {
                 timerTV.setText(String.valueOf(l) + "s");
@@ -135,11 +125,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         };
         timer.start();
 
-        mediaPlayer = MediaPlayer.create(getApplicationContext(),R.raw.gametheme);
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.gametheme);
         mediaPlayer.start();
 
     }
-
 
 
     public abstract class CountUpTimer extends CountDownTimer {
@@ -165,17 +154,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    protected void shuffleButtonGraphics(){
+    protected void shuffleButtonGraphics() {
 
         Random rand = new Random();
 
-        for(int i =0; i< numberOfElements; i++)
-        {
-            buttonGraphiclocations[i] = i % (numberOfElements/2);
+        for (int i = 0; i < numberOfElements; i++) {
+            buttonGraphiclocations[i] = i % (numberOfElements / 2);
         }
 
-        for(int i =0; i< numberOfElements; i++)
-        {
+        for (int i = 0; i < numberOfElements; i++) {
             int temp = buttonGraphiclocations[i];
             int swapIndex = rand.nextInt(12);
             buttonGraphiclocations[i] = buttonGraphiclocations[swapIndex];
@@ -186,41 +173,46 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if(isBusy){
+
+        if (isBusy) {
             return;
         }
         MemoryButton button = (MemoryButton) v;
         //i think this is to prevent matched item to react if user accidently selected it
-        if(button.isMatched)
+        if (button.isMatched)
             return;
         //first image selected or first image selected after a match is completed
-        if(selectedButton == null){
+        if (selectedButton == null) {
             selectedButton = button;
             selectedButton.flip();
             return;
         }
         //if user select the same image. Do nothing
-        if(selectedButton.getId() == button.getId()){
+        if (selectedButton.getId() == button.getId()) {
             return;
         }
         //if previously selected photo is the same current selected photo
-        if(selectedButton.getFrontDrawableId() == button.getFrontDrawableId()){
+        if (selectedButton.getFrontDrawableId() == button.getFrontDrawableId()) {
             button.flip();
             button.setMatched(true);
             selectedButton.setMatched(true);
             selectedButton.setEnabled(false);
             button.setEnabled(false);
-            score+=1;
+            score += 1;
             scoreTV = (TextView) findViewById(R.id.score);
-            scoreTV.setText(String.valueOf("Score " +score));
-            if(checkForRoomOrSingleGame() == 0){
-            endGame();}
-            else {
-               flag = chooseWinner();
-                if(flag){
+            scoreTV.setText(String.valueOf("Score " + score));
+            if (checkForRoomOrSingleGame() == 0) {
+                endGame();
+            } else {
+
+                flag = chooseWinner();
+
+                if(flag) {
+
                     alertWinner();
                 } else {
-                alertWinner();
+
+                    alertWinner();
                 }
 
             }
@@ -229,7 +221,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
             return;
 
-        } else{
+        } else {
             //if photo selected doesn't match
             selectedButton2 = button;
             selectedButton2.flip();
@@ -246,13 +238,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     selectedButton2 = null;
                     isBusy = false;
                 }
-            },500);
+            }, 500);
         }
 
     }
 
-    public void endGame(){
-        if(score == 6){
+    public void endGame() {
+        if (score == 6) {
 
 
             mediaPlayer.stop();
@@ -261,7 +253,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(GameActivity.this);
             alertDialogBuilder
-                    .setMessage("Game is over!" )
+                    .setMessage("Game is over!")
                     .setCancelable(false)
                     .setPositiveButton("NEW GAME", new DialogInterface.OnClickListener() {
                         @Override
@@ -286,7 +278,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private boolean chooseWinner() {
 
-        if (score >= 6) {
+        if (score == 6) {
 
             DatabaseReference myRef = database.getReference("rooms/" + roomName + "/" + "/Winner");
             myRef.setValue("True");
@@ -303,18 +295,20 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         return false;
 
     }
+
     public int checkForRoomOrSingleGame() {
         SharedPreferences preferences = getSharedPreferences("room", Context.MODE_PRIVATE);
         int flag = preferences.getInt("multiplayer", 0);
         return flag;
 
     }
+
     public void alertWinner() {
-        DatabaseReference myRef = database.getReference("rooms/" +roomName+"/Winner");
+        DatabaseReference myRef = database.getReference("rooms/" + roomName + "/Winner");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull  DataSnapshot snapshot) {
-                if(snapshot.exists() && score <6){
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists() && score < 6) {
 
                     mediaPlayer.stop();
                     mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.wintheme);
@@ -323,7 +317,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     dialog.startLoadingLostDialog();
                     dialog.onClickPlay(roomName);
                     dialog.clickOnQuit(roomName);
-
 
 
                 } else {

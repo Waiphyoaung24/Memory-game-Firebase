@@ -49,7 +49,7 @@ public class SignInActivity extends AppCompatActivity {
                 if (!playerName.equals("")) {
                     btnSignin.setText("Logging in");
                     btnSignin.setEnabled(false);
-                    playerRef = database.getReference("players/"+playerName);
+                    playerRef = database.getReference("players/" + playerName);
                     addEventListener();
                     playerRef.setValue("");
                 }
@@ -95,43 +95,12 @@ public class SignInActivity extends AppCompatActivity {
     public void checkExistingUser() {
         SharedPreferences pref = getSharedPreferences("Users", Context.MODE_PRIVATE);
         String username = pref.getString("playerName", "");
+        if (!username.isEmpty()) {
 
-        DatabaseReference myRef = database.getReference("players/"+username);
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                  Intent intent = new Intent(SignInActivity.this,Main_menuActivity.class);
-                  startActivity(intent);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull  DatabaseError error) {
-
-            }
-        });
-
+            Intent intent = new Intent(SignInActivity.this, Main_menuActivity.class);
+            startActivity(intent);
+        }
 
     }
 }
 
-class User {
-    String name;
-
-    public User() {
-
-    }
-
-    public User(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-}

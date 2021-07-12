@@ -1,15 +1,12 @@
 package com.example.memory_gam_ca_team8_.activities;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,7 +14,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.memory_gam_ca_team8_.R;
-import com.example.memory_gam_ca_team8_.domains.Image;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,7 +23,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class RoomActivity extends AppCompatActivity {
 
@@ -44,6 +39,8 @@ public class RoomActivity extends AppCompatActivity {
     DatabaseReference roomsRef;
     private static final String websiteUrl = "https://memory-team8-ca-default-rtdb.asia-southeast1.firebasedatabase.app/";
     ArrayList<String> prepareImages;
+    boolean flag = false;
+    boolean fullRoom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,10 +74,6 @@ public class RoomActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.putExtra("roomName", roomName);
                 startActivity(intent);
-                SharedPreferences pref = getSharedPreferences("room", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = pref.edit();
-                editor.putInt("multiplayer", 1);
-                editor.apply();
 
 
             }
@@ -89,12 +82,9 @@ public class RoomActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 roomName = roomsList.get(position);
-                roomRef = database.getReference("rooms/" + roomName + "/player2");
-                roomRef.setValue(playerName);
 
-                retrievePhotos(roomName);
+              isRoomFull();
 
 
             }
@@ -159,7 +149,10 @@ public class RoomActivity extends AppCompatActivity {
                     prepareImages.add(snapshot.child(String.valueOf(i)).getValue(String.class));
 
                 }
-                sendGameActivity(prepareImages);
+                if (flag == true) {
+                    sendGameActivity(prepareImages);
+                    flag = false;
+                }
             }
 
             @Override
@@ -178,5 +171,29 @@ public class RoomActivity extends AppCompatActivity {
         intent.putExtra("roomName", roomName);
         startActivity(intent);
     }
+
+    public boolean isRoomFull() {
+        DatabaseReference myRef = database.getReference("rooms/"+roomName+"/"+"player2/");
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    Toast.makeText(RoomActivity.this, "room occupied", Toast.LENGTH_SHORT).show();
+                }else {
+                    roomRef = database.getReference("rooms/" + roomName + "/player2");
+                    roomRef.setValue(playerName);
+                    flag = true;
+                    retrievePhotos(roomName);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+      return fullRoom;
+    }
+
 
 }

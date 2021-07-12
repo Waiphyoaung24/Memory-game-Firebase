@@ -76,10 +76,11 @@ public class LoadingDialog {
         btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(activity, RoomActivity.class);
-                activity.startActivity(intent);
                 DatabaseReference reference = database.getReference("rooms/"+roomName);
                 reference.setValue(null);
+                Intent intent = new Intent(activity, RoomActivity.class);
+                activity.startActivity(intent);
+
 
             }
         });
