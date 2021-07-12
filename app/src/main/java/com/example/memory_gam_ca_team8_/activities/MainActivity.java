@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < 20; i++) {
             imgList.add(new Image());
         }
-        // 设置数据适配器
+        // initiate image adapter
         adapter = new ImageAdapter(this, imgList, pbHor, tvPb);
         gvImg.setAdapter(adapter);
 
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        // 设置点击图片的事件
+        // set onclick listener for gridview
         gvImg.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
@@ -102,11 +102,13 @@ public class MainActivity extends AppCompatActivity {
                                     int position, long id) {
 
                 // 如果当前是已选中，就取消，如果是没选中，就选择
+                //if selected, cancel it, verse versa
                 if (imgList.get(position).isSel()) {
                     imgList.get(position).setSel(false);
                     selNum--;
                     if (selNum < 6) {
                         // 如果选择图片小于6个，设置不可见
+                        //if the selection less than 6, the button is set as invisible
                         btnTo.setVisibility(View.GONE);
                     }
                 } else {
@@ -117,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                     imgList.get(position).setSel(true);
                     selNum++;
                     if (selNum >= 6) {
-                        // 如果选择图片大于6个，设置可见
+                        // if selection >=6, set the button visible
                         btnTo.setVisibility(View.VISIBLE);
                         btnTo.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -141,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 // 刷新界面
+                //refresh the view
                 adapter.notifyDataSetChanged();
             }
         });
@@ -149,47 +152,47 @@ public class MainActivity extends AppCompatActivity {
 
     private void initData() {
 
-        // 添加点击事件
+        // add click event
         btnFetch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(adapter.getBkgdThread()!=null) {
                     adapter.getBkgdThread().interrupt();
                 }
-                // 获取输入的图片地址链接
+                // get url
                 String url = etUrl.getText().toString();
                 if ("".equals(url.trim())) {
                     Toast.makeText(MainActivity.this, "URL is invalid", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                // 每次点击Fetch按钮后，图片需要还原
+                //everytime the fetch button clicked, the imglist,progress bar would be reset
                 for (int i = 0; i < 20; i++) {
                     imgList.get(i).setImgSrc(null);
                 }
                 adapter.notifyDataSetChanged();
 
-                // 还原进度条
+                // rst progress bar
                 pbHor.setProgress(0);
-                // 设置文本
+                // reset progress bar text
                 tvPb.setText("Downloading 0 of 20 images");
 
-                // 开启子线程，访问网页
+                // new thread, request http
                 new Thread(() -> {
                     try {
                         int index = 0;
 
-                        // 获取网页源码
+                        // get http response
                         Document document = Jsoup.connect(url).timeout(10000).get();
-                        // 获取所有图片标签
+                        // get all <img> tags from http response
                         Elements elements = document.select("img");
                         for (Element element : elements) {
-                            // 需要判断图片标签是否是正确的图片
+                            // determine whether the img tag is correct or not
                             String imgSrc = element.attr("src");
 
-                            // 判断后缀
+                            // determine whether the image is .jpg file
                             if (imgSrc.contains(".jpg") || imgSrc.contains(".png")) {
-                                // 只需要前20张
+                                // get the first 20 images
                                 if (index >= 20) {
                                     break;
                                 }
@@ -213,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * 初始化页面控件
+     * initiate the ui
      */
     private void initComponents() {
 

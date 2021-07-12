@@ -84,7 +84,7 @@ public class ImageAdapter extends BaseAdapter {
 
         Image item = (Image) getItem(position);
         if (item.getImgSrc() != null) {
-            // 同步下载图片
+            // download images
 
             ViewHolder finalViewHolder = viewHolder;
             bkgdThread = new Thread() {
@@ -92,7 +92,7 @@ public class ImageAdapter extends BaseAdapter {
                 public void run() {
                     super.run();
 /*                    try {
-                        Thread.sleep(1000);
+                        bkgdThread.sleep(10000);
                     }
                     catch(Exception e){}*/
                     if(bkgdThread.isInterrupted()){
@@ -120,7 +120,6 @@ public class ImageAdapter extends BaseAdapter {
                     ((Activity) mContext).runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-
                             finalViewHolder.photos.setImageBitmap(finalBitmap);
                             // 下载完一张，就需要设置进度条
                             pbHor.setProgress((index) * 5);
