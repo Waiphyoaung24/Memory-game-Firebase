@@ -31,6 +31,8 @@ public class ImageAdapter extends BaseAdapter {
     // 进度文本
     private TextView tvPb;
 
+    private Thread bkgdThread;
+
     // 全局图片下载记录
     private int index = 0;
     // 记录加载的图片链接
@@ -83,12 +85,19 @@ public class ImageAdapter extends BaseAdapter {
         Image item = (Image) getItem(position);
         if (item.getImgSrc() != null) {
             // 同步下载图片
+
             ViewHolder finalViewHolder = viewHolder;
-            new Thread() {
+            bkgdThread = new Thread() {
                 @Override
                 public void run() {
                     super.run();
-
+/*                    try {
+                        Thread.sleep(1000);
+                    }
+                    catch(Exception e){}*/
+                    if(bkgdThread.isInterrupted()){
+                        return;
+                    }
                     Bitmap bitmap = null;
                     String imgSrc = ((Image) getItem(position)).getImgSrc();
                     try {
@@ -111,6 +120,7 @@ public class ImageAdapter extends BaseAdapter {
                     ((Activity) mContext).runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+
                             finalViewHolder.photos.setImageBitmap(finalBitmap);
                             // 下载完一张，就需要设置进度条
                             pbHor.setProgress((index) * 5);
@@ -121,7 +131,8 @@ public class ImageAdapter extends BaseAdapter {
                         }
                     });
                 }
-            }.start();
+            };
+            bkgdThread.start();
 
         } else {
             viewHolder.photos.setImageDrawable(mContext.getResources().getDrawable(R.drawable.no_img));
@@ -139,5 +150,13 @@ public class ImageAdapter extends BaseAdapter {
     class ViewHolder {
         ImageView photos;
         ImageView check;
+    }
+
+    public Thread getBkgdThread() {
+        return bkgdThread;
+    }
+
+    public void setBkgdThread(Thread bkgdThread) {
+        this.bkgdThread = bkgdThread;
     }
 }
