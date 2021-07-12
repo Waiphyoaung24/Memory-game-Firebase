@@ -43,7 +43,7 @@ public class RoomActivity extends AppCompatActivity {
     DatabaseReference roomRef;
     DatabaseReference roomsRef;
     private static final String websiteUrl = "https://memory-team8-ca-default-rtdb.asia-southeast1.firebasedatabase.app/";
-    ArrayList<String>prepareImages;
+    ArrayList<String> prepareImages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,10 +74,9 @@ public class RoomActivity extends AppCompatActivity {
                 btnCreate.setText("Creating Room");
                 btnCreate.setEnabled(false);
                 roomName = playerName;
-                roomRef = database.getReference("rooms/" + roomName + "'s Room/" + "player1");
-                addRoomEventListener();
-                roomRef.setValue(playerName);
-
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra("roomName", roomName);
+                startActivity(intent);
                 SharedPreferences pref = getSharedPreferences("room", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = pref.edit();
                 editor.putInt("multiplayer", 1);
@@ -98,8 +97,6 @@ public class RoomActivity extends AppCompatActivity {
                 retrievePhotos(roomName);
 
 
-
-
             }
         });
 
@@ -107,16 +104,17 @@ public class RoomActivity extends AppCompatActivity {
     }
 
 
-    private void addRoomEventListener() {
+   /*     private void addRoomEventListener() {
         roomRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 btnCreate.setText("Create Room");
                 btnCreate.setEnabled(true);
-
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.putExtra("roomName", roomName);
-                startActivity(intent);
+                intent.putExtra("roomName",roomName);
+                 startActivity(intent);
+
+
             }
 
             @Override
@@ -126,7 +124,7 @@ public class RoomActivity extends AppCompatActivity {
                 Toast.makeText(RoomActivity.this, "Error!", Toast.LENGTH_SHORT).show();
             }
         });
-    }
+    }*/
 
     private void addRoomsEventListener() {
         roomsRef = database.getReference("rooms");
@@ -152,12 +150,12 @@ public class RoomActivity extends AppCompatActivity {
 
     public void retrievePhotos(String data) {
         prepareImages = new ArrayList<>();
-        DatabaseReference myRef = database.getReference("rooms/" + data+"/photos");
+        DatabaseReference myRef = database.getReference("rooms/" + data + "/photos");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 prepareImages.clear();
-                for(int i = 0 ; i<6;i++){
+                for (int i = 0; i < 6; i++) {
                     prepareImages.add(snapshot.child(String.valueOf(i)).getValue(String.class));
 
                 }
@@ -173,11 +171,11 @@ public class RoomActivity extends AppCompatActivity {
     }
 
 
-    public void sendGameActivity(ArrayList<String>list){
+    public void sendGameActivity(ArrayList<String> list) {
         Intent intent = new Intent(getApplicationContext(), GameActivity.class);
         intent.putStringArrayListExtra("image", list);
-        intent.putExtra("role","Player2");
-        intent.putExtra("roomName",roomName);
+        intent.putExtra("role", "Player2");
+        intent.putExtra("roomName", roomName);
         startActivity(intent);
     }
 

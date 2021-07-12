@@ -131,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
                                 } else {
                                     DatabaseReference myRef = database.getReference("rooms/"+playerName+"'s Room/"+"photos/");
                                     myRef.setValue(prepareImages);
+                                    DatabaseReference reference = database.getReference("rooms/" + playerName + "'s Room/" + "player1");
+                                    reference.setValue(playerName);
                                     waitingforPlayer2();
 
                                 }
@@ -256,7 +258,9 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
 
                 } else {
+
                     dialog.startloadingAlertDialog();
+
                 }
             }
 

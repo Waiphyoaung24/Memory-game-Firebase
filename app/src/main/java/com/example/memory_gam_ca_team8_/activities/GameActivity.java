@@ -284,14 +284,19 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private boolean chooseWinner(){
+    private boolean chooseWinner() {
 
-        if(score >= 6){
-            DatabaseReference myRef = database.getReference("rooms/"+roomName+"/"+"/Winner");
+        if (score >= 6) {
+
+            DatabaseReference myRef = database.getReference("rooms/" + roomName + "/" + "/Winner");
             myRef.setValue("True");
+            mediaPlayer.stop();
+            mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.wintheme);
+            mediaPlayer.start();
             LoadingDialog dialog = new LoadingDialog(GameActivity.this);
             dialog.startLoadingWinnerDialog();
-            dialog.onClickPlay();
+            dialog.onClickPlay(roomName);
+            dialog.clickOnQuit(roomName);
 
             return true;
         }
@@ -311,9 +316,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             public void onDataChange(@NonNull  DataSnapshot snapshot) {
                 if(snapshot.exists() && score <6){
 
+                    mediaPlayer.stop();
+                    mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.wintheme);
+                    mediaPlayer.start();
                     LoadingDialog dialog = new LoadingDialog(GameActivity.this);
                     dialog.startLoadingLostDialog();
-                    dialog.onClickPlay();
+                    dialog.onClickPlay(roomName);
+                    dialog.clickOnQuit(roomName);
 
 
 
