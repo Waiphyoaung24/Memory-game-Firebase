@@ -66,6 +66,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
 
     MediaPlayer mediaPlayer;
+    MediaPlayer mediaPlayer1;
     private TextView scoreTV;
     int score = 0;
     String playerType = "";
@@ -203,6 +204,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
         //if previously selected photo is the same current selected photo
         if(selectedButton.getFrontDrawableId() == button.getFrontDrawableId()){
+
+            mediaPlayer1 = MediaPlayer.create(getApplicationContext(),R.raw.scoresound);
+            mediaPlayer1.start();
+
+
             button.flip();
             button.setMatched(true);
             selectedButton.setMatched(true);
