@@ -45,11 +45,6 @@ public class Main_menuActivity extends AppCompatActivity {
                 SharedPreferences preferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
                 String username = preferences.getString("playerName","");
                 removeUserfromFirebase(username);
-                SharedPreferences.Editor editor = preferences.edit();
-
-                editor.remove("playerName");
-                editor.apply();
-                finish();
                 Intent intent = new Intent(getApplicationContext(),SignInActivity.class);
                 startActivity(intent);
             }
@@ -58,6 +53,10 @@ public class Main_menuActivity extends AppCompatActivity {
         btnHost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences pref = getSharedPreferences("room", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putInt("multiplayer", 1);
+                editor.apply();
                 Intent intent = new Intent(getApplicationContext(),RoomActivity.class);
                 startActivity(intent);
             }
@@ -74,8 +73,13 @@ public class Main_menuActivity extends AppCompatActivity {
 
     }
     public void removeUserfromFirebase(String username){
-        DatabaseReference ref = database.getReference("players/"+username);
-        ref.removeValue();
+//        DatabaseReference ref = database.getReference("players/"+username);
+//        ref.removeValue();
+        SharedPreferences preferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.remove("playerName");
+        editor.apply();
+
 
     }
 }
