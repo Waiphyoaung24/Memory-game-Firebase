@@ -280,6 +280,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             DatabaseReference myRef = database.getReference("rooms/" + roomName + "/" + "/Winner");
             myRef.setValue("True");
             mediaPlayer.stop();
+            customHandler.removeCallbacks(updateTimerThread);
             mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.wintheme);
             mediaPlayer.start();
             LoadingDialog dialog = new LoadingDialog(GameActivity.this);
@@ -308,6 +309,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 if (snapshot.exists() && score < 6) {
 
                     mediaPlayer.stop();
+                    customHandler.removeCallbacks(updateTimerThread);
                     mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.wintheme);
                     mediaPlayer.start();
                     LoadingDialog dialog = new LoadingDialog(GameActivity.this);
