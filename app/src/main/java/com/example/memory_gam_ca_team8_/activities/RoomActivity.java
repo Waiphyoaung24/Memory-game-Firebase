@@ -68,8 +68,6 @@ public class RoomActivity extends AppCompatActivity {
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btnCreate.setText("Creating Room");
-                btnCreate.setEnabled(false);
                 roomName = playerName;
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.putExtra("roomName", roomName);
@@ -94,27 +92,7 @@ public class RoomActivity extends AppCompatActivity {
     }
 
 
-   /*     private void addRoomEventListener() {
-        roomRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                btnCreate.setText("Create Room");
-                btnCreate.setEnabled(true);
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.putExtra("roomName",roomName);
-                 startActivity(intent);
 
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                btnCreate.setText("Create Room");
-                btnCreate.setEnabled(true);
-                Toast.makeText(RoomActivity.this, "Error!", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }*/
 
     private void addRoomsEventListener() {
         roomsRef = database.getReference("rooms");

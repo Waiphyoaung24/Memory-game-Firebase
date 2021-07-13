@@ -33,6 +33,7 @@ import com.example.memory_gam_ca_team8_.R;
 import com.example.memory_gam_ca_team8_.components.LoadingDialog;
 import com.example.memory_gam_ca_team8_.delegates.IDelegateDialog;
 import com.example.memory_gam_ca_team8_.domains.MemoryButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -53,6 +54,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private boolean isBusy = false;
     private boolean flag;
+    private boolean winner;
 
     ArrayList<String> images = new ArrayList<>();
 
@@ -124,12 +126,30 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         //Timer Start
-        tvTimer= (TextView) findViewById(R.id.timerTextView);
+        tvTimer = (TextView) findViewById(R.id.timerTextView);
         startTime = SystemClock.uptimeMillis();
         customHandler.postDelayed(updateTimerThread, 0);
 
         mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.gametheme);
         mediaPlayer.start();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if(checkForRoomOrSingleGame() ==1){
+                    if(alertWinner()==true) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(GameActivity.this, "You lost", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+
+
+            }
+        }).start();
 
     }
 
@@ -139,6 +159,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         df.setTimeZone(TimeZone.getTimeZone("GMT"));
         return df.format(d);
     }
+
     //Timer run (new thread)
     private Runnable updateTimerThread = new Runnable() {
         public void run() {
@@ -205,7 +226,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
                 flag = chooseWinner();
 
-                if(flag) {
+                if (flag) {
 
                     alertWinner();
                 } else {
@@ -306,7 +327,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    public void alertWinner() {
+    public boolean alertWinner() {
         DatabaseReference myRef = database.getReference("rooms/" + roomName + "/Winner");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -321,10 +342,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     dialog.startLoadingLostDialog();
                     dialog.onClickPlay(roomName);
                     dialog.clickOnQuit(roomName);
-
+                    winner = true;
 
                 } else {
-
+                    winner = false;
                 }
             }
 
@@ -333,6 +354,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
+        return winner;
     }
 
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(this, "You should finish the game", Toast.LENGTH_SHORT).show();
+    }
 }

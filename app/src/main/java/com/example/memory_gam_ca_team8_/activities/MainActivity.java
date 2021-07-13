@@ -2,6 +2,7 @@ package com.example.memory_gam_ca_team8_.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String websiteUrl = "https://memory-team8-ca-default-rtdb.asia-southeast1.firebasedatabase.app/";
     LoadingDialog dialog = new LoadingDialog(MainActivity.this);
 
+    @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -153,6 +155,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                if(adapter.getBkgdThread()!=null) {
+                    adapter.getBkgdThread().interrupt();
+                }
                 // 获取输入的图片地址链接
                 String url = etUrl.getText().toString();
                 if ("".equals(url.trim())) {
