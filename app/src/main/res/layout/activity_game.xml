@@ -5,14 +5,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/MemoryLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:layout_marginTop="0dp"
         android:orientation="horizontal">
 
@@ -21,19 +19,18 @@
             android:layout_width="170dp"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:gravity="left"
-            android:textSize="18dp" />
+            android:gravity="start"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/counter"
             android:layout_width="10dp"
             android:layout_height="match_parent"
-            android:textSize="18dp"/>
+            android:textSize="18sp"/>
 
         <TextView
             android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            />
+            android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/timerTextView"
@@ -41,14 +38,11 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="0dp"
             android:textColor="@color/black"
-            android:textSize="18dp" />
+            android:textSize="18sp" />
     </LinearLayout>
 
 
     <GridLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="590dp"
         android:id="@+id/grid_layout_4x3"

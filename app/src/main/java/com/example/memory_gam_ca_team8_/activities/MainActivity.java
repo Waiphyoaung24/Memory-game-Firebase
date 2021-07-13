@@ -61,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
     FirebaseDatabase database;
     private static final String websiteUrl = "https://memory-team8-ca-default-rtdb.asia-southeast1.firebasedatabase.app/";
     LoadingDialog dialog = new LoadingDialog(MainActivity.this);
+    Thread thread;
+    private int fetchClick = 0;
 
     @SuppressLint("HandlerLeak")
     @Override
@@ -71,19 +73,13 @@ public class MainActivity extends AppCompatActivity {
         initComponents();
         initData();
 
-        btnTo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-            }
-        });
+        btnTo.setOnClickListener(view -> {});
 
         imgList = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
             imgList.add(new Image());
         }
-        // 设置数据适配器
+        // set adapter
         adapter = new ImageAdapter(this, imgList, pbHor, tvPb);
         gvImg.setAdapter(adapter);
 
@@ -95,19 +91,19 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        // 设置点击图片的事件
+        // set listener for image click
         gvImg.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
 
-                // 如果当前是已选中，就取消，如果是没选中，就选择
+                // if image selected, cancel it, vise versa
                 if (imgList.get(position).isSel()) {
                     imgList.get(position).setSel(false);
                     selNum--;
                     if (selNum < 6) {
-                        // 如果选择图片小于6个，设置不可见
+                        // if selection less than 6, button invisible
                         btnTo.setVisibility(View.GONE);
                     }
                 } else {
@@ -118,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                     imgList.get(position).setSel(true);
                     selNum++;
                     if (selNum >= 6) {
-                        // 如果选择图片大于6个，设置可见
+                        // if selection equal or more than 6, button visible
                         btnTo.setVisibility(View.VISIBLE);
                         btnTo.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -141,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                         });
                     }
                 }
-                // 刷新界面
+                // refresh
                 adapter.notifyDataSetChanged();
             }
         });
@@ -150,48 +146,44 @@ public class MainActivity extends AppCompatActivity {
 
     private void initData() {
 
-        // 添加点击事件
+        // set click listener
         btnFetch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if(adapter.getBkgdThread()!=null) {
-                    adapter.getBkgdThread().interrupt();
-                }
-                // 获取输入的图片地址链接
+                // get url
                 String url = etUrl.getText().toString();
                 if ("".equals(url.trim())) {
                     Toast.makeText(MainActivity.this, "URL is invalid", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                // 每次点击Fetch按钮后，图片需要还原
+                // reset image list once fetch button clicked
                 for (int i = 0; i < 20; i++) {
                     imgList.get(i).setImgSrc(null);
                 }
                 adapter.notifyDataSetChanged();
 
-                // 还原进度条
+                // reset progressbar
                 pbHor.setProgress(0);
-                // 设置文本
+                // reset text
                 tvPb.setText("Downloading 0 of 20 images");
 
-                // 开启子线程，访问网页
-                new Thread(() -> {
+                // new thread to have http request
+                thread = new Thread(() -> {
                     try {
                         int index = 0;
 
-                        // 获取网页源码
+                        // get http response and get parsed by Jsoup
                         Document document = Jsoup.connect(url).timeout(10000).get();
-                        // 获取所有图片标签
+                        // get all <img> tags from http response
                         Elements elements = document.select("img");
                         for (Element element : elements) {
-                            // 需要判断图片标签是否是正确的图片
+                            // determine whether there is a correct image
                             String imgSrc = element.attr("src");
 
-                            // 判断后缀
+                            // determine the file format
                             if (imgSrc.contains(".jpg") || imgSrc.contains(".png")) {
-                                // 只需要前20张
+                                // get first 20 images
                                 if (index >= 20) {
                                     break;
                                 }
@@ -200,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
 
-                        // 通知图片
+                        // message
                         Message msg = new Message();
                         msg.obj = imgList;
                         mHandler.sendMessage(msg);
@@ -208,14 +200,55 @@ public class MainActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }).start();
+                });
+                thread.start();
 
+                fetchClick++;
+                if (fetchClick >= 2 && thread != null) {
+                    thread.interrupt();
+
+                    //create new thread after interruption
+                    thread = new Thread(() -> {
+                        try {
+                            int index = 0;
+
+                            // 获取网页源码
+                            Document document = Jsoup.connect(url).timeout(10000).get();
+                            // 获取所有图片标签
+                            Elements elements = document.select("img");
+                            for (Element element : elements) {
+                                // 需要判断图片标签是否是正确的图片
+                                String imgSrc = element.attr("src");
+
+                                // 判断后缀
+                                if (imgSrc.contains(".jpg") || imgSrc.contains(".png")) {
+                                    // 只需要前20张
+                                    if (index >= 20) {
+                                        break;
+                                    }
+                                    imgList.get(index).setImgSrc(imgSrc);
+                                    index++;
+                                }
+                            }
+
+                            // 通知图片
+                            Message msg = new Message();
+                            msg.obj = imgList;
+                            mHandler.sendMessage(msg);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    thread.start();
+                    Toast.makeText(MainActivity.this, "re-downloading images", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
 
     /**
-     * 初始化页面控件
+     * initiate the UI components
      */
     private void initComponents() {
 

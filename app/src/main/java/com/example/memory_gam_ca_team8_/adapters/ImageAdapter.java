@@ -26,16 +26,16 @@ public class ImageAdapter extends BaseAdapter {
     private Context mContext;
     private List<Image> images;
 
-    // 进度条
+    // progress bar
     private ProgressBar pbHor;
-    // 进度文本
+    // progress text
     private TextView tvPb;
 
     private Thread bkgdThread;
 
-    // 全局图片下载记录
+    // image download record
     private int index = 0;
-    // 记录加载的图片链接
+    // image source url
     private Set<String> urls = new HashSet<>();
 
     @Override
@@ -84,20 +84,17 @@ public class ImageAdapter extends BaseAdapter {
 
         Image item = (Image) getItem(position);
         if (item.getImgSrc() != null) {
-            // 同步下载图片
+            // download images the same time
 
             ViewHolder finalViewHolder = viewHolder;
             bkgdThread = new Thread() {
                 @Override
                 public void run() {
                     super.run();
-//                    try {
-//                        Thread.sleep(1000);
-//                    }
-//                    catch(Exception e){}
-                    if(bkgdThread.isInterrupted()){
-                        return;
+                    try {
+                        bkgdThread.sleep(0);
                     }
+                    catch(Exception e){}
                     Bitmap bitmap = null;
                     String imgSrc = ((Image) getItem(position)).getImgSrc();
                     try {
@@ -116,18 +113,18 @@ public class ImageAdapter extends BaseAdapter {
                         urls.add(imgSrc);
                         index += 1;
                     }
-                    // 主线程更新界面
+                    // back to main thread
                     Bitmap finalBitmap = bitmap;
                     ((Activity) mContext).runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
 
                             finalViewHolder.photos.setImageBitmap(finalBitmap);
-                            // 下载完一张，就需要设置进度条
+                            // update progress bar the same time with downloading images
                             pbHor.setProgress((index) * 5);
-                            // 设置文本
+                            // update progress text
                             tvPb.setText("Downloading " + (index) + " of 20 images");
-                            // 图片加载完，才显示选择按钮
+                            // indicate play button after all image download
                             finalViewHolder.check.setVisibility(View.VISIBLE);
                         }
                     });
@@ -138,14 +135,13 @@ public class ImageAdapter extends BaseAdapter {
         } else {
             viewHolder.photos.setImageDrawable(mContext.getResources().getDrawable(R.drawable.no_img));
         }
-        // 判断图片选中状态
-        if (item.isSel()) {  // 设置为选中状态
+        // get selection
+        if (item.isSel()) {  // set as selected
             viewHolder.check.setImageResource(R.drawable.sel);
-        } else {    // 默认不选择
+        } else {    // default not selected
             viewHolder.check.setImageResource(R.drawable.no_sel);
         }
         return convertView;
-
     }
 
     class ViewHolder {
@@ -153,11 +149,4 @@ public class ImageAdapter extends BaseAdapter {
         ImageView check;
     }
 
-    public Thread getBkgdThread() {
-        return bkgdThread;
-    }
-
-    public void setBkgdThread(Thread bkgdThread) {
-        this.bkgdThread = bkgdThread;
-    }
 }
