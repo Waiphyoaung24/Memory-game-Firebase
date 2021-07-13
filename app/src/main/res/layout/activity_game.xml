@@ -44,7 +44,7 @@
 
     <GridLayout
         android:layout_width="match_parent"
-        android:layout_height="590dp"
+        android:layout_height="match_parent"
         android:id="@+id/grid_layout_4x3"
         android:columnCount="3"
         android:rowCount="4"

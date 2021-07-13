@@ -3,6 +3,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.view.Gravity;
 import android.widget.GridLayout;
 
 import androidx.appcompat.widget.AppCompatButton;
@@ -48,7 +49,8 @@ public class MemoryButton extends AppCompatButton  {
                 try {
                     bitmap = Glide.with(context).asBitmap().load(imagesMap.get(frontImageDrawableId)).submit().get();
                     //front = new BitmapDrawable(this.getResources(), bitmap);
-                    front = new BitmapDrawable(bitmap);
+                    front = new BitmapDrawable(getResources(),bitmap);
+                    //front = new BitmapDrawable(bitmap);
 
                 } catch (
                         ExecutionException e) {
