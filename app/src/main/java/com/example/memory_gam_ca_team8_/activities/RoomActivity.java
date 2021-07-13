@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -41,7 +42,7 @@ public class RoomActivity extends AppCompatActivity {
     ArrayList<String> prepareImages;
     boolean flag = false;
     boolean fullRoom;
-
+    ImageButton back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,9 +50,23 @@ public class RoomActivity extends AppCompatActivity {
         initComponents();
         initRoom();
         prepareImages = new ArrayList<>();
-
+        ImageButton back = (ImageButton)findViewById(R.id.backToMain);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RoomActivity.this, Main_menuActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
     }
+
+    @Override
+    public void onBackPressed() {
+    }
+
+
 
     public void initComponents() {
         database = FirebaseDatabase.getInstance(websiteUrl);

@@ -290,7 +290,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
 
-                            finish();
+                            Intent intent = new Intent(GameActivity.this, Main_menuActivity.class);
+                            startActivity(intent);
 
                         }
                     });

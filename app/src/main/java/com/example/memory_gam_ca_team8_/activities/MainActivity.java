@@ -27,6 +27,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
     LoadingDialog dialog = new LoadingDialog(MainActivity.this);
     Thread thread;
     private int fetchClick = 0;
+    ImageButton back;
+    Intent backintent;
 
     @SuppressLint("HandlerLeak")
     @Override
@@ -73,7 +76,8 @@ public class MainActivity extends AppCompatActivity {
         initComponents();
         initData();
 
-        btnTo.setOnClickListener(view -> {});
+        btnTo.setOnClickListener(view -> {
+        });
 
         imgList = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
@@ -126,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                                     intent.putStringArrayListExtra("image", prepareImages);
                                     startActivity(intent);
                                 } else {
-                                    DatabaseReference myRef = database.getReference("rooms/"+playerName+"'s Room/"+"photos/");
+                                    DatabaseReference myRef = database.getReference("rooms/" + playerName + "'s Room/" + "photos/");
                                     myRef.setValue(prepareImages);
                                     DatabaseReference reference = database.getReference("rooms/" + playerName + "'s Room/" + "player1");
                                     reference.setValue(playerName);
@@ -141,6 +145,21 @@ public class MainActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         });
+        if (checkForRoomOrSingleGame() == 0) {
+            backintent = new Intent(this, Main_menuActivity.class);
+
+        } else {
+            backintent = new Intent(this, RoomActivity.class);
+        }
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(backintent);
+                finish();
+            }
+        });
+
 
     }
 
@@ -260,8 +279,14 @@ public class MainActivity extends AppCompatActivity {
         btnTo = findViewById(R.id.btn_to);
         database = FirebaseDatabase.getInstance(websiteUrl);
         SharedPreferences preferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
-        playerName = preferences.getString("playerName","");
+        playerName = preferences.getString("playerName", "");
+        back = (ImageButton) findViewById(R.id.backToRoom);
 
+
+    }
+
+    @Override
+    public void onBackPressed() {
 
     }
 
@@ -280,18 +305,19 @@ public class MainActivity extends AppCompatActivity {
         return flag;
 
     }
-    public void waitingforPlayer2(){
-        DatabaseReference myRef = database.getReference("rooms/"+playerName+"'s Room/"+"player2");
+
+    public void waitingforPlayer2() {
+        DatabaseReference myRef = database.getReference("rooms/" + playerName + "'s Room/" + "player2");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
+                if (snapshot.exists()) {
                     dialog.dismissDialog();
-                    Log.e("player arrived","player arrived");
-                    Intent intent = new Intent(getApplicationContext(),GameActivity.class);
+                    Log.e("player arrived", "player arrived");
+                    Intent intent = new Intent(getApplicationContext(), GameActivity.class);
                     intent.putStringArrayListExtra("image", prepareImages);
-                    intent.putExtra("role","Player1");
-                    intent.putExtra("roomName",playerName+"'s Room");
+                    intent.putExtra("role", "Player1");
+                    intent.putExtra("roomName", playerName + "'s Room");
                     startActivity(intent);
 
                 } else {

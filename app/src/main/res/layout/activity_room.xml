@@ -5,19 +5,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.RoomActivity">
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintLeft_toLeftOf="parent"
-    android:text="Room List"
-    android:textSize="28sp"
-    android:id="@+id/tv_title"
-    style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
-    android:textColor="@color/black"
-    android:padding="12dp">
+    <ImageButton
+        android:id="@+id/backToMain"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginLeft="12dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:background="@drawable/back" />
 
-</TextView>
+    <TextView
+        android:id="@+id/tv_title"
+        style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:text="Room List"
+        android:textColor="@color/black"
+        android:textSize="28sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/backToMain">
+
+    </TextView>
     <ListView
         android:id="@+id/lv_rooms"
         android:layout_width="0dp"

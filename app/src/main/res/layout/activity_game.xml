@@ -11,7 +11,7 @@
         android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="8dp"
         android:orientation="horizontal">
 
         <TextView
@@ -20,33 +20,28 @@
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:gravity="start"
-            android:textSize="18sp" />
+            android:layout_marginLeft="48dp"
+            android:textSize="21sp" />
 
-        <TextView
-            android:id="@+id/counter"
-            android:layout_width="10dp"
-            android:layout_height="match_parent"
-            android:textSize="18sp"/>
 
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/timerTextView"
             android:layout_width="110dp"
+            android:layout_marginLeft="65dp"
+            android:layout_gravity="right"
             android:layout_height="wrap_content"
-            android:layout_marginRight="0dp"
             android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:textSize="21sp" />
     </LinearLayout>
 
 
     <GridLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/grid_layout_4x3"
         android:columnCount="3"
+        android:layout_centerHorizontal="true"
         android:rowCount="4"
         tools:context=".MainActivity"
         android:layout_marginTop="40dp"
