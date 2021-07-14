@@ -39,7 +39,7 @@ public class MemoryButton extends AppCompatButton  {
         this.imagesMap = imagesMap;
 
 //        front = context.getDrawable(frontImageDrawableId);
-        back = context.getDrawable(R.drawable.code);
+        back = context.getDrawable(R.drawable.no_img);
         new Thread() {
             @Override
             public void run() {
